@@ -28,19 +28,22 @@ export const ImageScreen = () => {
 
   const NULL = () => null;
   const getImage = async () => {
-    const fetchImageData = await GetPhotos();
+    const fetchImageData = await GetPhotos(setLoading);
     setImageData(fetchImageData);
     setLoading(false);
   };
 
   const searchImages = async searchItem => {
-    const response = searchItem ? await SearchPhotos(searchItem) : getImage();
+    setLoading(true);
+    const response = searchItem
+      ? await SearchPhotos(searchItem, setLoading)
+      : getImage();
     setImageData(response?.results);
     setLoading(false);
   };
   const debounce = useDebouncedCallback(
     newValue => searchImages(newValue),
-    2000,
+    500,
   );
 
   React.useMemo(async () => getImage(), []);
